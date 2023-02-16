@@ -21,48 +21,69 @@ def findStartEnd(maze: [[str]]) -> tuple[[int], [int]]:
     return start_coords, end_coords
 
 
+def findNeighbours(maze: [[str]], x: int, y: int, visited: [[int]]) -> [int]:
+    try:
+        if 0 <= x <= len(maze) and 0 <= y <= len(maze[0]):
+            new_move = maze[x][y]
+            if [x, y] not in visited:
+                if new_move == '-':
+                    return [x, y]
+    except:
+        pass
+
+
 def findPath(maze: [[str]], start: [int], end: [int]) -> [[int]]:
-    stack = []
+    stack = [start]
+    neighbours = []
     visited = []
-    stack.append(start)
-    # if there are nodes around that are not visited then we push to path
+    path = {}  # this will be used to store the visited nodes and their parent node
     while stack:
         current_node = stack.pop()
+        if current_node in visited:
+            continue
+        visited.append(current_node)
         x = current_node[0]
         y = current_node[1]
         # we try to find all directions that we can go
-        try:
-            if maze[x+1][y] == '-':  # down
-                if [x+1, y] not in visited:
-                    stack.append([x+1, y])
-        except:
-            pass
-        try:
-            if maze[x][y-1] == '-':  # left
-                if [x, y-1] not in visited:
-                    stack.append([x, y-1])
-        except:
-            pass
-        try:
-            if maze[x-1][y] == '-':  # up
-                if [x-1, y] not in visited:
-                    stack.append([x-1, y])
-        except:
-            pass
-        try:
-            if maze[x][y+1] == '-':  # right
-                if [x, y+1] not in visited:
-                    stack.append([x, y+1])
-        except:
-            pass
+        position_up = findNeighbours(maze, x-1, y, visited)
+        if position_up is not None:
+            stack.append(position_up)
+            neighbours.append(position_up)
+        position_down = findNeighbours(maze, x+1, y, visited)
+        if position_down is not None:
+            stack.append(position_down)
+            neighbours.append(position_down)
+        position_left = findNeighbours(maze, x, y-1, visited)
+        if position_left is not None:
+            stack.append(position_left)
+            neighbours.append(position_left)
+        position_right = findNeighbours(maze, x, y+1, visited)
+        if position_right is not None:
+            stack.append(position_right)
+            neighbours.append(position_right)
 
-        print(current_node)
-        visited.append(current_node)
+        path.update({tuple(current_node): neighbours})
+        neighbours = []
+
         if [x, y] == end:
             print("found!")
-            return visited
+            return path
 
-def printMaze(path:[[str]], maze:[[str]]):
+
+def pathToCoords(path: dict, end: [int], start: [int]) -> [[int]]:
+    coords_path = []
+    current = end
+    while current != start:
+        coords_path.append(current)
+        for key in path.keys():
+            if current in path.get(key):
+                current = list(key)
+                break
+    print(coords_path)
+    return coords_path
+
+
+def printMaze(path: [[int]], maze: [[str]]):
     for i in range(0, len(maze)):
         for j in range(0, len(maze[i])):
             if maze[i][j] != '#':
@@ -77,10 +98,12 @@ def printMaze(path:[[str]], maze:[[str]]):
         print((', '.join(map(str, row))).replace(',',""))
 
 
+
+
 if __name__ == '__main__':
     # make a user input bit where they input the mazes that they want to traverse
     maze = mazeToArray("maze-Easy.txt")
     start, end = findStartEnd(maze)
-    print(end)
     path = findPath(maze, start, end)
-    printMaze(path, maze)
+    coords_path = pathToCoords(path, end, start)
+    printMaze(coords_path,maze)
