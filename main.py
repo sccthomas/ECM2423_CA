@@ -100,8 +100,19 @@ def printMaze(path: [[int]], maze: [[str]]):
 
 if __name__ == '__main__':
     # make a user input bit where they input the mazes that they want to traverse
-    maze = mazeToArray("maze-Easy.txt")
-    start, end = findStartEnd(maze)
-    path = findPath(maze, start, end)
-    coords_path = pathToCoords(path, end, start)
-    printMaze(coords_path,maze)
+    while True:
+        user_choice = input("Welcome to the maze solver! \n"
+                            "What would you like to do \n"
+                            "1. Solve a maze \n"
+                            "2. Quit \n"
+                            " ------ : ")
+        if user_choice == "1":
+            user_maze = input("Please input your maze\n"
+                              "Make sure you input the full file name: ")
+            maze = mazeToArray(user_maze)
+            start, end = findStartEnd(maze)
+            path = findPath(maze, start, end)
+            coords_path = pathToCoords(path, end, start)
+            printMaze(coords_path,maze)
+        elif user_choice == "2":
+            break
