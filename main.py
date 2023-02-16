@@ -71,7 +71,7 @@ def findPath(maze: [[str]], start: [int], end: [int]) -> [[int]]:
 
 
 def pathToCoords(path: dict, end: [int], start: [int]) -> [[int]]:
-    coords_path = []
+    coords_path = [start]
     current = end
     while current != start:
         coords_path.append(current)
@@ -79,7 +79,6 @@ def pathToCoords(path: dict, end: [int], start: [int]) -> [[int]]:
             if current in path.get(key):
                 current = list(key)
                 break
-    print(coords_path)
     return coords_path
 
 
@@ -96,7 +95,6 @@ def printMaze(path: [[int]], maze: [[str]]):
         for i in range(0, len(row)*2, 2):
             row.insert(i, ' ')
         print((', '.join(map(str, row))).replace(',',""))
-
 
 
 
