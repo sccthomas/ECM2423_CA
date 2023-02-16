@@ -24,40 +24,44 @@ def findStartEnd(maze: [[str]]) -> tuple[[int], [int]]:
 def findPath(maze: [[str]], start: [int], end: [int]) -> [[int]]:
     stack = []
     visited = []
-    path = []
     stack.append(start)
     # if there are nodes around that are not visited then we push to path
     while stack:
         current_node = stack.pop()
         x = current_node[0]
         y = current_node[1]
-
+        anymore = 0
         # we try to find all directions that we can go
         try:
             if maze[x+1][y] == '-':  # down
                 if [x+1, y] not in visited:
                     stack.append([x+1, y])
+                    anymore += 1
         except:
             pass
         try:
             if maze[x][y-1] == '-':  # left
                 if [x, y-1] not in visited:
                     stack.append([x, y-1])
+                    anymore += 1
         except:
             pass
         try:
             if maze[x-1][y] == '-':  # up
                 if [x-1, y] not in visited:
                     stack.append([x-1, y])
+                    anymore += 1
         except:
             pass
         try:
             if maze[x][y+1] == '-':  # right
                 if [x, y+1] not in visited:
                     stack.append([x, y+1])
+                    anymore += 1
         except:
             pass
 
+        print(current_node)
         visited.append(current_node)
         if [x, y] == end:
             print("found!")
@@ -82,5 +86,6 @@ if __name__ == '__main__':
     # make a user input bit where they input the mazes that they want to traverse
     maze = mazeToArray("maze-Easy.txt")
     start, end = findStartEnd(maze)
+    print(end)
     path = findPath(maze, start, end)
     printMaze(path, maze)
