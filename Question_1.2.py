@@ -126,7 +126,7 @@ if __name__ == '__main__':
             print("\n")
             print("Execution time:", total)
             print("Nodes Visited:", len(visited))
-            print("Steps in path:", len(coords_path))
+            print("Steps in path:", len(coords_path)-1)
             print("\n")
             printMaze(coords_path,maze)
             print("\n")
