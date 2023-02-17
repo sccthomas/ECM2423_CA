@@ -1,3 +1,5 @@
+import time
+
 def mazeToArray(file: str) -> [[str]]:
     maze = []
     maze_file = open("mazes/" + file, "r")
@@ -32,7 +34,7 @@ def findNeighbours(maze: [[str]], x: int, y: int, visited: [[int]]) -> [int]:
         pass
 
 
-def findPath(maze: [[str]], start: [int], end: [int]) -> [[int]]:
+def findPath(maze: [[str]], start: [int], end: [int]) -> tuple[[[int]], [[int]]]:
     stack = [start]
     neighbours = []
     visited = []
@@ -67,7 +69,7 @@ def findPath(maze: [[str]], start: [int], end: [int]) -> [[int]]:
 
         if [x, y] == end:
             print("found!")
-            return path
+            return path, visited
 
 
 def pathToCoords(path: dict, end: [int], start: [int]) -> [[int]]:
@@ -92,8 +94,6 @@ def printMaze(path: [[int]], maze: [[str]]):
         y = coord[1]
         maze[x][y] = 'X'
     for row in maze:
-        for i in range(0, len(row)*2, 2):
-            row.insert(i, ' ')
         print((', '.join(map(str, row))).replace(',',""))
 
 
@@ -109,10 +109,30 @@ if __name__ == '__main__':
         if user_choice == "1":
             user_maze = input("Please input your maze\n"
                               "Make sure you input the full file name: ")
-            maze = mazeToArray(user_maze)
+            t0 = time.time()
+            maze = []
+            try:
+                maze = mazeToArray(user_maze)
+            except:
+                print("Sorry this file doesn't exist \n"
+                      "Mazes must be in the mazes folder")
+                continue
             start, end = findStartEnd(maze)
-            path = findPath(maze, start, end)
+            path, visited = findPath(maze, start, end)
             coords_path = pathToCoords(path, end, start)
+            t1 = time.time()
+            total = t1-t0
+            print("################################################")
+            print("\n")
+            print("Execution time:", total)
+            print("Nodes Visited:", len(visited))
+            print("Steps in path:", len(coords_path))
+            print("\n")
             printMaze(coords_path,maze)
+            print("\n")
+            print("################################################")
+
         elif user_choice == "2":
             break
+        else:
+            print("Not a valid input!")
