@@ -1,4 +1,5 @@
 import sys
+import time
 
 sys.setrecursionlimit(100000000)
 
@@ -35,9 +36,6 @@ class Maze:
         self.createNodes()
         self.findNeighbourhood()
         self.start, self.end = self.findStartEnd()
-        path = self.depthFirstSearch(self.start, self.end)
-        path.append(self.start.getLocation())
-        self.printMaze(path)
 
     def mazeToArray(self) -> [[str]]:
         maze_array = []
@@ -111,6 +109,13 @@ class Maze:
             if position_left is not None:
                 node.addToNeighbourhood(self.Nodes.get((x, y - 1)))
 
+    def getAmountVisited(self):
+        amount = 0
+        for node in self.Nodes.values():
+            if node.getVisited():
+                amount += 1
+        return amount
+
     def depthFirstSearch(self, node: [int], end: [int]):
         node.setVisited()
         coords = node.getLocation()
@@ -125,21 +130,48 @@ class Maze:
                     return path
         return 0
 
+    def solve_dfs(self):
+        path = self.depthFirstSearch(self.start, self.end)
+        path.append(self.start.getLocation())
+        print("\n")
+        print("################################################")
+        self.printMaze(path)
+        return len(path), self.getAmountVisited()
 
 
+if __name__ == '__main__':
+    # make a user input bit where they input the mazes that they want to traverse
+    while True:
+        user_choice = input("Welcome to the maze solver! \n"
+                            "What would you like to do \n"
+                            "1. Solve a maze \n"
+                            "2. Quit \n"
+                            " ------ : ")
+        if user_choice == "1":
+            user_maze = input("Please input your maze\n"
+                              "Make sure you input the full file name: ")
+            t0 = time.time()
+            maze = None
+            try:
+                path_length, visited = Maze(user_maze).solve_dfs()
+                t1 = time.time()
+                total = t1 - t0
+                print("################################################")
+                print("\n")
+                print("Execution time:", total)
+                print("Steps in path:", path_length)
+                print("Nodes Visited:", visited)
+                print("\n")
+                print("################################################")
+            except:
+                print("Sorry this file doesn't exist \n"
+                      "Mazes must be in the mazes folder")
+                continue
+        elif user_choice == "2":
+            break
+        else:
+            print("Not a valid input!")
 
 
-
-
-maze = Maze("maze-VLarge.txt")
-"""
-node = (maze.Nodes.get((1, 1)))
-for n in (node.getNeighbours()):
-    print(n.getVisited())
-maze.Nodes.get((0, 1)).setVisited()
-node = (maze.Nodes.get((1, 1)))
-for n in (node.getNeighbours()):
-    print(n.getVisited())
-"""
 
 
