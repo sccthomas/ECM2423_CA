@@ -5,7 +5,7 @@ sys.setrecursionlimit(100000000)
 
 
 class Node:
-    def __init__(self, location):
+    def __init__(self, location: [int]):
         self.location = location
         self.neighbours = []  # will contain references to neighbouring nodes
         self.visited = False
@@ -27,7 +27,7 @@ class Node:
 
 
 class Maze:
-    def __init__(self, maze):
+    def __init__(self, maze: str):
         self.maze = maze
         self.mazeToArray()
         self.width = len(self.maze[0])
@@ -109,14 +109,14 @@ class Maze:
             if position_left is not None:
                 node.addToNeighbourhood(self.Nodes.get((x, y - 1)))
 
-    def getAmountVisited(self):
+    def getAmountVisited(self) -> int:
         amount = 0
         for node in self.Nodes.values():
             if node.getVisited():
                 amount += 1
         return amount
 
-    def depthFirstSearch(self, node: [int], end: [int]):
+    def depthFirstSearch(self, node: [int], end: [int]) -> [[int]]:
         node.setVisited()
         coords = node.getLocation()
         if coords == end.getLocation():
@@ -148,6 +148,7 @@ if __name__ == '__main__':
                             "2. Quit \n"
                             " ------ : ")
         if user_choice == "1":
+            print("Note all maze files must be stored in the directory mazes!")
             user_maze = input("Please input your maze\n"
                               "Make sure you input the full file name: ")
             t0 = time.time()
