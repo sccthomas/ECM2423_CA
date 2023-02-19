@@ -133,7 +133,7 @@ def dfs(start: [int], end: [int], maze: [[str]], width, height):
 
 
 def game():
-    maze = mazeToArray("maze-Medium.txt")
+    maze = mazeToArray("maze-Easy.txt")
     start, end = findStartEnd(maze)
     width = len(maze[0])
     height = len(maze)
