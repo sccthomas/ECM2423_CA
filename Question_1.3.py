@@ -11,6 +11,7 @@ class Node:
         self.visited = False
         self.g = 0
         self.h = 0
+        self.f = sys.maxsize
         self.parent = None
 
     def set_visited(self):
@@ -28,28 +29,29 @@ class Node:
     def get_neighbours(self):
         return self.neighbours
 
-    def set_parent(self,node):
+    def set_parent(self, node):
         self.parent = node
+
+    def get_parent(self):
+        return self.parent
 
     def set_g(self,g):
         self.g = g
 
-    def get_g(self):
-        return self.g
+    def set_f(self,f):
+        self.f = self.h + self.g
 
     def set_h(self,h):
         self.h = h
 
+    def get_f(self):
+        return self.f
+
+    def get_g(self):
+        return self.g
+
     def get_h(self):
         return self.h
-
-
-
-
-
-
-
-
 
 
 class Maze:
@@ -142,78 +144,48 @@ class Maze:
                 amount += 1
         return amount
 
-    def depth_first_search(self, node: [int], end: [int]) -> [[int]]:
-        node.set_visited()
-        coords = node.get_location()
-        if coords == end.get_location():
-            return [node.get_location()]
-        neighbours = node.get_neighbours()
-        for i in range(0, len(neighbours)):
-            if not neighbours[i].get_visited():
-                path = self.depth_first_search(neighbours[i], end)
-                if path != 0:
-                    path += [neighbours[i].get_location()]
-                    return path
-        return 0
-
-    def solve_dfs(self):
-        path = self.depth_first_search(self.start, self.end)
-        path.append(self.start.get_location())
-        print("\n")
-        print("################################################")
-        self.print_maze(path)
-        return len(path), self.get_amount_visited()
-
     def calculate_manhattan(self, node):
         h = abs(node.get_location()[0] - self.end.get_location()[0]) + \
             abs(node.get_location()[1] - self.end.get_location()[1])
         return h
 
+    def calculate_heursitic(self):
+        for node in self.Nodes.values():
+            node.h = self.calculate_manhattan(node)
+
     def a_star(self):
-        closed_list = {}
+        self.calculate_heursitic()
         open_list = {}
         open_list.update({self.start: 0})
         while len(open_list) != 0:
             current = min(open_list, key=open_list.get)
-            current_f = open_list.get(current)
             open_list.pop(current)
-            neighbours = current.get_neighbours()
-            for neighbour in neighbours:
-                neighbour.set_parent(current)
-                if neighbour == self.end:
-                    return neighbour
-                else:
-                    neighbour.set_g(current.get_g()+1)
-                    neighbour.set_h(self.calculate_manhattan(neighbour))
-                    neighbour_f = neighbour.get_g() + neighbour.get_h()
-                    if neighbour in open_list:
-                        if neighbour in open_list:
-                            if open_list.get(neighbour) < neighbour_f:
-                                continue
-                    if neighbour in closed_list:
-                        if neighbour in open_list:
-                            if open_list.get(neighbour) < neighbour_f:
-                                continue
-                    else:
-                        open_list.update({neighbour: neighbour_f})
-            closed_list.update({current: current_f})
+            current.set_visited()
+            if current == self.end:
+                return current
+            for neighbour in current.get_neighbours():
+                if not neighbour.get_visited():
+                    temp_g = current.get_g() + 1
+                    temp_f = neighbour.get_h() + temp_g
+                    if temp_f < neighbour.get_f():
+                        neighbour.set_f(temp_f)
+                        neighbour.set_g(temp_g)
+                        open_list.update({neighbour: temp_f})
+                        neighbour.set_parent(current)
 
-    def back_track_a_star(self):
-        pass
-
-
-
-
-
+    def backtrack(self, node):
+        current = node
+        amount = 1
+        path = [current.get_location()]
+        while current != self.start:
+            current = current.get_parent()
+            path.append(current.get_location())
+            amount += 1
+        return path, amount
 
 
 if __name__ == '__main__':
     # make a user input bit where they input the mazes that they want to traverse
-    maze = Maze("maze-Easy.txt")
-    p = maze.a_star()
-    print(p.get_location())
-
-    """
     while True:
         user_choice = input("Welcome to the maze solver! \n"
                             "What would you like to do \n"
@@ -224,17 +196,19 @@ if __name__ == '__main__':
             print("Note all maze files must be stored in the directory mazes!")
             user_maze = input("Please input your maze\n"
                               "Make sure you input the full file name: ")
-            t0 = time.time()
             maze = None
             try:
-                path_length, visited = Maze(user_maze).solve_dfs()
+                maze = Maze(user_maze)
+                t0 = time.time()
+                path, amount = (maze.backtrack(maze.a_star()))
                 t1 = time.time()
+                maze.print_maze(path)
                 total = t1 - t0
                 print("################################################")
                 print("\n")
                 print("Execution time:", total)
-                print("Steps in path:", path_length)
-                print("Nodes Visited:", visited)
+                print("Steps in path:", amount)
+                print("Nodes Visited:", maze.get_amount_visited())
                 print("\n")
                 print("################################################")
             except:
@@ -245,7 +219,6 @@ if __name__ == '__main__':
             break
         else:
             print("Not a valid input!")
-    """
 
 
 

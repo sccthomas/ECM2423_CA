@@ -3,7 +3,7 @@ import time
 
 sys.setrecursionlimit(100000000)
 
-
+#############change the search for neighbours so it goes left to right
 class Node:
     def __init__(self, location: [int]):
         self.location = location
