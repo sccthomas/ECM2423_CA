@@ -9,7 +9,7 @@ class Node:
         self.location = location
         self.neighbours = []  # will contain references to neighbouring nodes
         self.visited = False
-        self.g = sys.maxsize
+        self.g = 0
         self.h = 0
         self.parent = None
 
@@ -31,11 +31,25 @@ class Node:
     def set_parent(self,node):
         self.parent = node
 
+    def set_g(self,g):
+        self.g = g
 
-def calculate_manhattan(node, end):
-    h = abs(node.get_location()[0] - end.get_location()[0]) + \
-        abs(node.get_location()[1] - end.get_location()[1])
-    return h
+    def get_g(self):
+        return self.g
+
+    def set_h(self,h):
+        self.h = h
+
+    def get_h(self):
+        return self.h
+
+
+
+
+
+
+
+
 
 
 class Maze:
@@ -150,19 +164,45 @@ class Maze:
         self.print_maze(path)
         return len(path), self.get_amount_visited()
 
+    def calculate_manhattan(self, node):
+        h = abs(node.get_location()[0] - self.end.get_location()[0]) + \
+            abs(node.get_location()[1] - self.end.get_location()[1])
+        return h
+
     def a_star(self):
-        open_list = [self.start]
-        closed_list = []
-        node_f = {}
-        node_f.update({self.start : 0})
+        closed_list = {}
+        open_list = {}
+        open_list.update({self.start: 0})
         while len(open_list) != 0:
-            current = min(node_f, key=node_f.get)
-            open_list.remove(current)
+            current = min(open_list, key=open_list.get)
+            current_f = open_list.get(current)
+            open_list.pop(current)
             neighbours = current.get_neighbours()
             for neighbour in neighbours:
                 neighbour.set_parent(current)
                 if neighbour == self.end:
                     return neighbour
+                else:
+                    neighbour.set_g(current.get_g()+1)
+                    neighbour.set_h(self.calculate_manhattan(neighbour))
+                    neighbour_f = neighbour.get_g() + neighbour.get_h()
+                    if neighbour in open_list:
+                        if neighbour in open_list:
+                            if open_list.get(neighbour) < neighbour_f:
+                                continue
+                    if neighbour in closed_list:
+                        if neighbour in open_list:
+                            if open_list.get(neighbour) < neighbour_f:
+                                continue
+                    else:
+                        open_list.update({neighbour: neighbour_f})
+            closed_list.update({current: current_f})
+
+    def back_track_a_star(self):
+        pass
+
+
+
 
 
 
@@ -170,7 +210,9 @@ class Maze:
 if __name__ == '__main__':
     # make a user input bit where they input the mazes that they want to traverse
     maze = Maze("maze-Easy.txt")
-    maze.a_star()
+    p = maze.a_star()
+    print(p.get_location())
+
     """
     while True:
         user_choice = input("Welcome to the maze solver! \n"
