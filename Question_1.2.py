@@ -10,34 +10,34 @@ class Node:
         self.neighbours = []  # will contain references to neighbouring nodes
         self.visited = False
 
-    def setVisited(self):
+    def set_visited(self):
         self.visited = True
 
-    def getLocation(self):
+    def get_location(self):
         return self.location
 
-    def getVisited(self):
+    def get_visited(self):
         return self.visited
 
-    def addToNeighbourhood(self, node):
+    def add_to_neighbourhood(self, node):
         self.neighbours.append(node)
 
-    def getNeighbours(self):
+    def get_neighbours(self):
         return self.neighbours
 
 
 class Maze:
     def __init__(self, maze: str):
         self.maze = maze
-        self.mazeToArray()
+        self.maze_to_array()
         self.width = len(self.maze[0])
         self.height = len(self.maze)
         self.Nodes = {}
-        self.createNodes()
-        self.findNeighbourhood()
-        self.start, self.end = self.findStartEnd()
+        self.create_nodes()
+        self.find_neighbourhood()
+        self.start, self.end = self.find_start_end()
 
-    def mazeToArray(self) -> [[str]]:
+    def maze_to_array(self) -> [[str]]:
         maze_array = []
         maze_file = open("mazes/" + self.maze, "r")
         rows = maze_file.readlines()
@@ -51,7 +51,7 @@ class Maze:
                 maze_array.append(row_final)
         self.maze = maze_array
 
-    def printMaze(self, path: [[int]]):
+    def print_maze(self, path: [[int]]):
         for i in range(0, len(self.maze)):
             for j in range(0, len(self.maze[i])):
                 if self.maze[i][j] != '#':
@@ -63,7 +63,7 @@ class Maze:
         for row in self.maze:
             print((', '.join(map(str, row))).replace(',', ""))
 
-    def findStartEnd(self) -> tuple[[int], [int]]:
+    def find_start_end(self) -> tuple[[int], [int]]:
         start = self.maze[0]
         end = self.maze[len(self.maze) - 1]
         start_coords = [0, start.index('-')]
@@ -72,14 +72,14 @@ class Maze:
         end_coords = self.Nodes.get(tuple(end_coords))
         return start_coords, end_coords
 
-    def createNodes(self):
+    def create_nodes(self):
         for i in range(0, self.height):
             for j in range(0, self.width):
                 if self.maze[i][j] == '-':
                     node = Node([i, j])
                     self.Nodes.update({(i, j): node})
 
-    def findNeighbour(self, x: int, y: int) -> [int]:
+    def find_neighbour(self, x: int, y: int) -> [int]:
         if 0 <= x <= self.height-1 and 0 <= y <= self.width-1:
             new_move = self.maze[x][y]
             if new_move == '-':
@@ -87,56 +87,57 @@ class Maze:
         else:
             return None
 
-    def findNeighbourhood(self):
+    def find_neighbourhood(self):
         for node in self.Nodes.values():
-            coordinates = node.getLocation()
+            coordinates = node.get_location()
             x = coordinates[0]
             y = coordinates[1]
 
-            position_up = self.findNeighbour(x - 1, y)
+            position_up = self.find_neighbour(x - 1, y)
             if position_up is not None:
-                node.addToNeighbourhood(self.Nodes.get((x - 1, y)))
+                node.add_to_neighbourhood(self.Nodes.get((x - 1, y)))
 
-            position_right = self.findNeighbour(x, y + 1)
+            position_right = self.find_neighbour(x, y + 1)
             if position_right is not None:
-                node.addToNeighbourhood(self.Nodes.get((x, y + 1)))
+                node.add_to_neighbourhood(self.Nodes.get((x, y + 1)))
 
-            position_down = self.findNeighbour(x + 1, y)
+            position_down = self.find_neighbour(x + 1, y)
             if position_down is not None:
-                node.addToNeighbourhood(self.Nodes.get((x + 1, y)))
+                node.add_to_neighbourhood(self.Nodes.get((x + 1, y)))
 
-            position_left = self.findNeighbour(x, y - 1)
+            position_left = self.find_neighbour(x, y - 1)
             if position_left is not None:
-                node.addToNeighbourhood(self.Nodes.get((x, y - 1)))
+                node.add_to_neighbourhood(self.Nodes.get((x, y - 1)))
 
-    def getAmountVisited(self) -> int:
+    def get_amount_visited(self) -> int:
         amount = 0
         for node in self.Nodes.values():
-            if node.getVisited():
+            if node.get_visited():
                 amount += 1
         return amount
 
-    def depthFirstSearch(self, node: [int], end: [int]) -> [[int]]:
-        node.setVisited()
-        coords = node.getLocation()
-        if coords == end.getLocation():
-            return [node.getLocation()]
-        neighbours = node.getNeighbours()
+    def depth_first_search(self, node: [int], end: [int]) -> [[int]]:
+        node.set_visited()
+        coords = node.get_location()
+        if coords == end.get_location():
+            return [node.get_location()]
+        neighbours = node.get_neighbours()
         for i in range(0, len(neighbours)):
-            if not neighbours[i].getVisited():
-                path = self.depthFirstSearch(neighbours[i], end)
+            if not neighbours[i].get_visited():
+                path = self.depth_first_search(neighbours[i], end)
                 if path != 0:
-                    path += [neighbours[i].getLocation()]
+                    path += [neighbours[i].get_location()]
                     return path
         return 0
 
     def solve_dfs(self):
-        path = self.depthFirstSearch(self.start, self.end)
-        path.append(self.start.getLocation())
+        path = self.depth_first_search(self.start, self.end)
+        path.append(self.start.get_location())
         print("\n")
         print("################################################")
-        self.printMaze(path)
-        return len(path), self.getAmountVisited()
+        path.pop(0)  # remove duplicated end node
+        self.print_maze(path)
+        return len(path), self.get_amount_visited()
 
 
 if __name__ == '__main__':
