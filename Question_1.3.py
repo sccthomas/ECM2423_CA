@@ -149,12 +149,7 @@ class Maze:
             abs(node.get_location()[1] - self.end.get_location()[1])
         return h
 
-    def calculate_heursitic(self):
-        for node in self.Nodes.values():
-            node.h = self.calculate_manhattan(node)
-
     def a_star(self):
-        self.calculate_heursitic()
         open_list = {}
         open_list.update({self.start: 0})
         while len(open_list) != 0:
@@ -165,6 +160,7 @@ class Maze:
                 return current
             for neighbour in current.get_neighbours():
                 if not neighbour.get_visited():
+                    neighbour.set_h(self.calculate_manhattan(neighbour))
                     temp_g = current.get_g() + 1
                     temp_f = neighbour.get_h() + temp_g
                     if temp_f < neighbour.get_f():
