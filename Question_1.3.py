@@ -120,6 +120,14 @@ class Maze:
             coordinates = node.get_location()
             x = coordinates[0]
             y = coordinates[1]
+            position_left = self.find_neighbour(x, y - 1)
+
+            position_down = self.find_neighbour(x + 1, y)
+            if position_down is not None:
+                node.add_to_neighbourhood(self.Nodes.get((x + 1, y)))
+
+            if position_left is not None:
+                node.add_to_neighbourhood(self.Nodes.get((x, y - 1)))
 
             position_up = self.find_neighbour(x - 1, y)
             if position_up is not None:
@@ -128,14 +136,6 @@ class Maze:
             position_right = self.find_neighbour(x, y + 1)
             if position_right is not None:
                 node.add_to_neighbourhood(self.Nodes.get((x, y + 1)))
-
-            position_down = self.find_neighbour(x + 1, y)
-            if position_down is not None:
-                node.add_to_neighbourhood(self.Nodes.get((x + 1, y)))
-
-            position_left = self.find_neighbour(x, y - 1)
-            if position_left is not None:
-                node.add_to_neighbourhood(self.Nodes.get((x, y - 1)))
 
     def get_amount_visited(self) -> int:
         amount = 0
@@ -155,19 +155,20 @@ class Maze:
         while len(open_list) != 0:
             current = min(open_list, key=open_list.get)
             open_list.pop(current)
+            if current.get_visited():
+                continue
             current.set_visited()
             if current == self.end:
                 return current
             for neighbour in current.get_neighbours():
-                if not neighbour.get_visited():
-                    neighbour.set_h(self.calculate_manhattan(neighbour))
-                    temp_g = current.get_g() + 1
-                    temp_f = neighbour.get_h() + temp_g
-                    if temp_f < neighbour.get_f():
-                        neighbour.set_g(temp_g)
-                        neighbour.set_f(temp_f)
-                        open_list.update({neighbour: temp_f})
-                        neighbour.set_parent(current)
+                neighbour.set_h(self.calculate_manhattan(neighbour))
+                temp_g = current.get_g() + 1
+                temp_f = neighbour.get_h() + temp_g
+                if temp_f < neighbour.get_f():
+                    neighbour.set_g(temp_g)
+                    neighbour.set_f(temp_f)
+                    open_list.update({neighbour: neighbour.get_f()})
+                    neighbour.set_parent(current)
 
     def backtrack(self, node):
         current = node
@@ -207,7 +208,7 @@ if __name__ == '__main__':
                 print("Nodes Visited:", maze.get_amount_visited())
                 print("\n")
                 print("################################################")
-            except:
+            except():
                 print("Sorry this file doesn't exist \n"
                       "Mazes must be in the mazes folder")
                 continue
