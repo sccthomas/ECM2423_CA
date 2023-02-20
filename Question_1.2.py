@@ -3,7 +3,7 @@ import time
 
 sys.setrecursionlimit(100000000)
 
-#############change the search for neighbours so it goes left to right
+
 class Node:
     def __init__(self, location: [int]):
         self.location = location
@@ -93,14 +93,6 @@ class Maze:
             x = coordinates[0]
             y = coordinates[1]
 
-            position_up = self.find_neighbour(x - 1, y)
-            if position_up is not None:
-                node.add_to_neighbourhood(self.Nodes.get((x - 1, y)))
-
-            position_right = self.find_neighbour(x, y + 1)
-            if position_right is not None:
-                node.add_to_neighbourhood(self.Nodes.get((x, y + 1)))
-
             position_down = self.find_neighbour(x + 1, y)
             if position_down is not None:
                 node.add_to_neighbourhood(self.Nodes.get((x + 1, y)))
@@ -108,6 +100,14 @@ class Maze:
             position_left = self.find_neighbour(x, y - 1)
             if position_left is not None:
                 node.add_to_neighbourhood(self.Nodes.get((x, y - 1)))
+
+            position_up = self.find_neighbour(x - 1, y)
+            if position_up is not None:
+                node.add_to_neighbourhood(self.Nodes.get((x - 1, y)))
+
+            position_right = self.find_neighbour(x, y + 1)
+            if position_right is not None:
+                node.add_to_neighbourhood(self.Nodes.get((x, y + 1)))
 
     def get_amount_visited(self) -> int:
         amount = 0

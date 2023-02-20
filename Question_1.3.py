@@ -120,12 +120,12 @@ class Maze:
             coordinates = node.get_location()
             x = coordinates[0]
             y = coordinates[1]
-            position_left = self.find_neighbour(x, y - 1)
 
             position_down = self.find_neighbour(x + 1, y)
             if position_down is not None:
                 node.add_to_neighbourhood(self.Nodes.get((x + 1, y)))
 
+            position_left = self.find_neighbour(x, y - 1)
             if position_left is not None:
                 node.add_to_neighbourhood(self.Nodes.get((x, y - 1)))
 
