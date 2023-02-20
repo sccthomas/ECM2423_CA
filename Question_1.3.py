@@ -164,8 +164,8 @@ class Maze:
                     temp_g = current.get_g() + 1
                     temp_f = neighbour.get_h() + temp_g
                     if temp_f < neighbour.get_f():
-                        neighbour.set_f(temp_f)
                         neighbour.set_g(temp_g)
+                        neighbour.set_f(temp_f)
                         open_list.update({neighbour: temp_f})
                         neighbour.set_parent(current)
 
