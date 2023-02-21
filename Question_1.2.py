@@ -209,15 +209,18 @@ class Maze:
         """
         This function is used to execute the process to start the depth first search procedure.
         It will print the pathed solution and calculate the statistics asked of us.
-        :return: The length of the path and the amount of nodes visited.
+        :return: The length of the path, the amount of nodes visited and time taken to search.
         """
+        t0 = time.time()
         path = self.depth_first_search(self.start, self.end)
         path.append(self.start.get_location())
+        t1 = time.time()
+        total = t1 - t0
         print("\n")
         print("################################################")
         path.pop(0)  # remove duplicated end node
         self.print_maze(path)
-        return len(path), self.get_amount_visited()
+        return len(path), self.get_amount_visited(), total
 
 
 if __name__ == '__main__':
@@ -232,12 +235,10 @@ if __name__ == '__main__':
             print("Note all maze files must be stored in the directory mazes!")
             user_maze = input("Please input your maze\n"
                               "Make sure you input the full file name: ")
-            t0 = time.time()
+
             maze = None
             try:
-                path_length, visited = Maze(user_maze).solve_dfs()
-                t1 = time.time()
-                total = t1 - t0
+                path_length, visited, total = Maze(user_maze).solve_dfs()
                 print("################################################")
                 print("\n")
                 print("Execution time:", total)
