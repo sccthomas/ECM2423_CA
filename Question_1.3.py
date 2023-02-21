@@ -282,7 +282,6 @@ if __name__ == '__main__':
             print("Note all maze files must be stored in the directory mazes!")
             user_maze = input("Please input your maze\n"
                               "Make sure you input the full file name: ")
-            maze = Nones
             try:
                 maze = Maze(user_maze)
                 t0 = time.time()
