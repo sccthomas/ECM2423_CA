@@ -273,7 +273,7 @@ class Maze:
 if __name__ == '__main__':
     # Code that will provide the user with a UI, where they can input mazes to be solved.
     while True:
-        user_choice = input("Welcome to the maze solver! \n"
+        user_choice = input("Welcome to the maze solver! With A* \n"
                             "What would you like to do \n"
                             "1. Solve a maze \n"
                             "2. Quit \n"
