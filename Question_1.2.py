@@ -197,7 +197,7 @@ class Maze:
         neighbours = node.get_neighbours()  # The neighbours of the current node
         for i in range(0, len(neighbours)):
             if not neighbours[i].get_visited():  # If the neighbour is not visited then
-                path = self.depth_first_search(neighbours[i], end)  # We call the function again wit the neighbour as
+                path = self.depth_first_search(neighbours[i], end)  # We call the function again with the neighbour as
                 # the current node. If successful it should call more function call for each neighbour until
                 # potentially it locates the end node. It returns not 0 if found.
                 if path != 0:
