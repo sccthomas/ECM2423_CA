@@ -1,5 +1,6 @@
 import sys
 import time
+import math
 
 
 sys.setrecursionlimit(100000000)
@@ -221,6 +222,27 @@ class Maze:
         """
         h = abs(node.get_location()[0] - self.end.get_location()[0]) + \
             abs(node.get_location()[1] - self.end.get_location()[1])
+        return h
+
+    def euclidean(self,node):
+        """
+
+        :param node:
+        :return:
+        """
+        h = math.sqrt((node.get_location()[0] - self.end.get_location()[0])**2 + (node.get_location()[1] - self.end.get_location()[1])**2)
+        return h
+
+    def diagonal(self,node):
+        """
+
+        :param node:
+        :return:
+        """
+        dx = abs(node.get_location()[0] - self.end.get_location()[0])
+        dy = abs(node.get_location()[1] - self.end.get_location()[1])
+
+        h = 1 * (dx + dy) + (math.sqrt(2) - 2 * 1) * min(dx, dy)
         return h
 
     def a_star(self):
