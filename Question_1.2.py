@@ -48,6 +48,7 @@ class Maze:
 
         :param maze: The maze file that the user has inputted
         """
+        self.name = maze
         self.maze = maze
         self.maze_to_array()
         self.width = len(self.maze[0])
@@ -66,7 +67,7 @@ class Maze:
         :return : 2D array of the maze text file
         """
         maze_array = []
-        maze_file = open("mazes/" + self.maze, "r")
+        maze_file = open(self.maze, "r")
         rows = maze_file.readlines()
         for row in rows:
             if len(row) > 1:
@@ -82,11 +83,11 @@ class Maze:
         """
         Print maze is a function that will take as a parameter the solution path
         and at each coordinate in the path enter an X in the 2D array.
-        Once this is completed the 2D maze array will be outputted to the user in a
-        formatted way.
+        Once this is completed the 2D maze array will be outputted to a file
         :param path: The mazes solution path, containing the coordinated of each move
                     needed in the maze.
         """
+        f = open(self.name+"_solved_DFS"+".txt", "w")
         for i in range(0, len(self.maze)):
             for j in range(0, len(self.maze[i])):
                 if self.maze[i][j] != '#':
@@ -96,7 +97,8 @@ class Maze:
             y = coord[1]
             self.maze[x][y] = 'X'
         for row in self.maze:
-            print((', '.join(map(str, row))).replace(',', ""))
+            f.write((', '.join(map(str, row))).replace(',', "")+"\n")
+        f.close()
 
     def find_start_end(self) -> tuple[[int], [int]]:
         """
@@ -232,7 +234,7 @@ if __name__ == '__main__':
                             "2. Quit \n"
                             " ------ : ")
         if user_choice == "1":
-            print("Note all maze files must be stored in the directory mazes!")
+            print("Note all maze files must be stored in the same directory!")
             user_maze = input("Please input your maze\n"
                               "Make sure you input the full file name: ")
 
@@ -246,9 +248,9 @@ if __name__ == '__main__':
                 print("Nodes Visited:", visited)
                 print("\n")
                 print("################################################")
-            except:
-                print("Sorry this file doesn't exist \n"
-                      "Mazes must be in the mazes folder")
+            except Exception as e:
+                print(e)
+                print("Sorry this file doesn't exist \n")
                 continue
         elif user_choice == "2":
             break
