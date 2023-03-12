@@ -236,7 +236,7 @@ if __name__ == '__main__':
         if user_choice == "1":
             print("Note all maze files must be stored in the same directory!")
             user_maze = input("Please input your maze\n"
-                              "Make sure you input the full file name: ")
+                              "Make sure you input the full file name (including .txt): ")
 
             maze = None
             try:
