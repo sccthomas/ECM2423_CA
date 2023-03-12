@@ -226,20 +226,20 @@ class Maze:
             abs(node.get_location()[1] - self.end.get_location()[1])
         return h
 
-    def euclidean(self,node):
+    def euclidean(self, node):
         """
-
+        A heuristic function to calculate the euclidean distance between two nodes.
         :param node:
-        :return:
+        :return: The heuristic value of h(n), where n is node.
         """
         h = math.sqrt((node.get_location()[0] - self.end.get_location()[0])**2 + (node.get_location()[1] - self.end.get_location()[1])**2)
         return h
 
-    def diagonal(self,node):
+    def diagonal(self, node):
         """
-
+        A heuristic function to calculate the diagonal distance between two nodes.
         :param node:
-        :return:
+        :return: The heuristic value of h(n), where n is node.
         """
         dx = abs(node.get_location()[0] - self.end.get_location()[0])
         dy = abs(node.get_location()[1] - self.end.get_location()[1])
@@ -265,17 +265,18 @@ class Maze:
             if current == self.end:  # If the current node is the end node then the loop breaks
                 return current  # Return the end node which will allow for backtracking the path
             for neighbour in current.get_neighbours():
-                neighbour.set_h(self.calculate_manhattan(neighbour))  # Calculate the heuristic value for each
-                # neighbour when it is needed saving on time complexity
-                # Calculate the temporary comparison f = g + h
-                temp_g = current.get_g() + 1
-                temp_f = neighbour.get_h() + temp_g
-                if temp_f < neighbour.get_f():  # If the temporary f is smaller than the current change the path
-                    neighbour.set_g(temp_g)
-                    neighbour.set_f(temp_f)
-                    open_list.update({neighbour: neighbour.get_f()})  # Update/Add the f value in open_list
-                    neighbour.set_parent(current)  # Set the neighbours parent as the current node, allowing for
-                    # backtracking
+                if not neighbour.get_visited():
+                    neighbour.set_h(self.calculate_manhattan(neighbour))  # Calculate the heuristic value for each
+                    # neighbour when it is needed saving on time complexity
+                    # Calculate the temporary comparison f = g + h
+                    temp_g = current.get_g() + 1
+                    temp_f = neighbour.get_h() + temp_g
+                    if temp_f < neighbour.get_f():  # If the temporary f is smaller than the current change the path
+                        neighbour.set_g(temp_g)
+                        neighbour.set_f(temp_f)
+                        open_list.update({neighbour: neighbour.get_f()})  # Update/Add the f value in open_list
+                        neighbour.set_parent(current)  # Set the neighbours parent as the current node, allowing for
+                        # backtracking
 
     def backtrack(self, node):
         """
@@ -305,7 +306,7 @@ if __name__ == '__main__':
         if user_choice == "1":
             print("Note all maze files must be stored in the same directory!")
             user_maze = input("Please input your maze\n"
-                              "Make sure you input the full file name: ")
+                              "Make sure you input the full file name (include .txt): ")
             try:
                 maze = Maze(user_maze)
                 t0 = time.time()
