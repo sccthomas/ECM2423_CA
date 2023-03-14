@@ -258,25 +258,26 @@ class Maze:
         # dictionary with an f value as its heuristic value
         while len(open_list) != 0:  # While there are nodes to be searched
             current = min(open_list, key=open_list.get)  # This lambda expression will get the node with the lowest f
+            if current == self.end:  # If the current node is the end node then the loop breaks
+                return current  # Return the end node which will allow for backtracking the path
             open_list.pop(current)
-            if current.get_visited():  # If the node is visited skip to next iteration
-                continue
             current.set_visited()  # Set the node as visited
             if current == self.end:  # If the current node is the end node then the loop breaks
                 return current  # Return the end node which will allow for backtracking the path
             for neighbour in current.get_neighbours():
-                if not neighbour.get_visited():
-                    neighbour.set_h(self.calculate_manhattan(neighbour))  # Calculate the heuristic value for each
-                    # neighbour when it is needed saving on time complexity
-                    # Calculate the temporary comparison f = g + h
-                    temp_g = current.get_g() + 1
-                    temp_f = neighbour.get_h() + temp_g
-                    if temp_f < neighbour.get_f():  # If the temporary f is smaller than the current change the path
-                        neighbour.set_g(temp_g)
-                        neighbour.set_f(temp_f)
-                        open_list.update({neighbour: neighbour.get_f()})  # Update/Add the f value in open_list
-                        neighbour.set_parent(current)  # Set the neighbours parent as the current node, allowing for
-                        # backtracking
+                if neighbour.get_visited():  # If the node is visited skip to next iteration
+                    continue
+                neighbour.set_h(self.calculate_manhattan(neighbour))  # Calculate the heuristic value for each
+                # neighbour when it is needed saving on time complexity
+                # Calculate the temporary comparison f = g + h
+                temp_g = current.get_g() + 1
+                temp_f = neighbour.get_h() + temp_g
+                if temp_f < neighbour.get_f():  # If the temporary f is smaller than the current change the path
+                    neighbour.set_g(temp_g)
+                    neighbour.set_f(temp_f)
+                    open_list.update({neighbour: neighbour.get_f()})  # Update/Add the f value in open_list
+                    neighbour.set_parent(current)  # Set the neighbours parent as the current node, allowing for
+                    # backtracking
 
     def backtrack(self, node):
         """
